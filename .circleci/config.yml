@@ -12,6 +12,10 @@ jobs:
   print_world:
     docker:
       - image: alpine:latest
+ 
+    requires:
+      - print_hello
+
     steps:
       - run: echo "world!"
 
