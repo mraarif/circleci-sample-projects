@@ -10,11 +10,11 @@ jobs:
       - run: echo "Hello "
 
   print_world:
-    docker:
-      - image: alpine:latest
- 
     requires:
       - print_hello
+
+    docker:
+      - image: alpine:latest
 
     steps:
       - run: echo "world!"
