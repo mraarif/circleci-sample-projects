@@ -10,7 +10,7 @@ commands:
         type: string
         default: "Anonymous"
     steps:
-      - run: echo "Hello from << parameters.from >>, our workflow Id is <<$CIRCLE_WORKFLOW_ID>>"
+      - run: echo "Hello from \<< parameters.from \>>, our workflow Id is \<< $CIRCLE_WORKFLOW_ID \>>"
 
 jobs:
   print_hello:
