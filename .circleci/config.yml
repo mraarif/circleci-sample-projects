@@ -10,9 +10,6 @@ jobs:
       - run: echo "Hello "
 
   print_world:
-    requires:
-      - print_hello
-
     docker:
       - image: alpine:latest
 
@@ -24,4 +21,6 @@ workflows:
   
     jobs:
       - print_hello
-      - print_world
+      - print_world:
+          requires:
+          - print_hello
