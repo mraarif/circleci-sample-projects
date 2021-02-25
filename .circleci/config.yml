@@ -64,3 +64,4 @@ workflows:
       - print_output_file:
           requires:
             - save_hello_world_output
+      - say_hello_from
