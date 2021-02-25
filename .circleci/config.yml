@@ -22,7 +22,7 @@ jobs:
     steps:
       - run: echo "Hello World! ${name}" > output.txt
       - persist_to_workspace:
-          root: /tmp
+          root: /
           paths:
             - output.txt
 
@@ -31,7 +31,7 @@ jobs:
       - image: alpine:latest
     steps:
       - attach_workspace:
-          at: /tmp
+          at: /
       - run: cat output.txt
 
 workflows:
