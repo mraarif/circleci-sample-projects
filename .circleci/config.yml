@@ -16,6 +16,24 @@ jobs:
     steps:
       - run: echo "world! $name"
 
+  save_hello_world_output:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: echo "Hello World! ${name}" > output.txt
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - output.txt
+
+  print_output_file:
+    docker:
+      - image: alpine:latest
+    steps:
+      - attach_workspace:
+          at: /tmp
+      - run: cat output.txt
+
 workflows:
   print_hello_world:
   
