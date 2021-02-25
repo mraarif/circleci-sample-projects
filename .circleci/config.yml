@@ -2,6 +2,16 @@
 version: 2.1
 # Use a package of configuration called an orb.
 
+commands:
+  sayhello:
+    description: "A very simple command for demonstration purposes"
+    parameters:
+      from:
+        type: string
+        default: "Anonymous"
+    steps:
+      - run: echo "Hello from << parameters.from >>, our workflow Id is <<$CIRCLE_WORKFLOW_ID>>"
+
 jobs:
   print_hello:
     docker:
@@ -34,6 +44,13 @@ jobs:
       - attach_workspace:
           at: /root/project
       - run: cat output.txt
+
+  say_hello_from:
+    docker:
+        - image: alpine:latest
+    steps:
+      - sayhello:
+          from: "aarif"
 
 workflows:
   print_hello_world:
