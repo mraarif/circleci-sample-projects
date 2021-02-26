@@ -54,7 +54,7 @@ jobs:
 
   test_failure:
     docker:
-      - image: alipine:latest
+      - image: alpine:latest
     steps:
       - run: $((3/0))
       - run: 
