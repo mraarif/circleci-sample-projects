@@ -52,15 +52,6 @@ jobs:
       - sayhello:
           from: "aarif"
 
-  test_failure:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: $((3/0))
-      - run: 
-          command: echo "There's a job failure"
-          when: on_fail
-
 workflows:
   print_hello_world:
   
@@ -74,4 +65,3 @@ workflows:
           requires:
             - save_hello_world_output
       - say_hello_from
-      - test_failure
