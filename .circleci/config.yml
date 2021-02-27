@@ -1,0 +1,67 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+
+commands:
+  sayhello:
+    description: "A very simple command for demonstration purposes"
+    parameters:
+      from:
+        type: string
+        default: "Anonymous"
+    steps:
+      - run: echo "Hello from <<parameters.from>>, our workflow Id is $CIRCLE_WORKFLOW_ID"
+
+jobs:
+  print_hello:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: echo "Hello "
+
+  print_world:
+    docker:
+      - image: alpine:latest
+
+    steps:
+      - run: echo "world! $name"
+
+  save_hello_world_output:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: echo "Hello World! ${name}" > output.txt
+      - run: pwd
+      - persist_to_workspace:
+          root: /root/project
+          paths:
+            - output.txt
+
+  print_output_file:
+    docker:
+      - image: alpine:latest
+    steps:
+      - attach_workspace:
+          at: /root/project
+      - run: cat output.txt
+
+  say_hello_from:
+    docker:
+        - image: alpine:latest
+    steps:
+      - sayhello:
+          from: "aarif"
+
+workflows:
+  print_hello_world:
+  
+    jobs:
+      - print_hello
+      - print_world:
+          requires:
+            - print_hello
+      - save_hello_world_output
+      - print_output_file:
+          requires:
+            - save_hello_world_output
+      - say_hello_from
