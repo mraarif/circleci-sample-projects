@@ -4,7 +4,7 @@ Resources:
     Properties:
       SecurityGroups:
         - !Ref InstanceSecurityGroup
-      KeyName: test-ansible-key
+      KeyName: temp-ansible-key
       ImageId: "ami-09c5e030f74651050"
   InstanceSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
