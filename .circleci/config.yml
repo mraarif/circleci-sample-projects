@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run: pwd
       - run: ls
-      - run: aws cloudformation create-stack --stack-name circleci --template-body file://../cloudformation/template.yml --region=us-west-2
+      - run: aws cloudformation create-stack --stack-name circleci --template-body file://cloudformation/template.yml --region=us-west-2
 
 workflows:
   print_hello_world:
