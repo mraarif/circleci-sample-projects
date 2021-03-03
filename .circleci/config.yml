@@ -6,7 +6,7 @@ jobs:
       - image: alpine:latest
     steps:
       - checkout
-      - run: apk add build-base
+      - run: apk add build-base gcc musl-dev jpeg-dev zlib-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
       - run: apk add --no-cache python3 py3-pip python3-dev
       - run: pip install ansible
       - add_ssh_keys:
