@@ -3,11 +3,9 @@ version: 2.1
 jobs:
   run_ansible_playbook:
     docker:
-      - image: alpine:latest
+      - image: python:3.8
     steps:
       - checkout
-      - run: apk add build-base gcc musl-dev jpeg-dev zlib-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
-      - run: apk add --no-cache python3 py3-pip python3-dev
       - run: pip install ansible
       - add_ssh_keys:
           fingerprints:
