@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run_ansible_playbook:
     docker:
-      - image: ubuntu:latest
+      - image: alpine:latest
     steps:
       - checkout
       - run: apk add build-base
