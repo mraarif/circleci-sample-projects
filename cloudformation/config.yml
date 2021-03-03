@@ -1,18 +1,14 @@
 version: 2.1
 
 jobs:
-  run_ansible_playbook:
+  create_infrastructure:
     docker:
-      - image: python:3.8-alpine
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "2f:9c:51:ac:9a:ce:97:7a:20:b6:6d:35:0f:ea:73:2d"
-
-      - run: ansible-playbook -i ansible-playbook/inventory.txt  ansible-playbook/main.yml
+      - run: aws cloudformation create-stack --stack-name circleci --template-body file://cloudformation/template.yml
 
 workflows:
-  run_ansible_jobs:
+  print_hello_world:
     jobs:
-      - run_ansible_playbook
+      - create_infrastructure
