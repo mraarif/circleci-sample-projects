@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - run: apk add build-base
-      - run: apk add --no-cache python3 py3-pip
+      - run: apk add --no-cache python3 py3-pip python3-dev
       - run: pip install ansible
       - add_ssh_keys:
           fingerprints:
