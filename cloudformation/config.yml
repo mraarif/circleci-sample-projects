@@ -1,0 +1,18 @@
+version: 2.1
+
+jobs:
+  run_ansible_playbook:
+    docker:
+      - image: python:3.8-alpine
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "2f:9c:51:ac:9a:ce:97:7a:20:b6:6d:35:0f:ea:73:2d"
+
+      - run: ansible-playbook -i ansible-playbook/inventory.txt  ansible-playbook/main.yml
+
+workflows:
+  run_ansible_jobs:
+    jobs:
+      - run_ansible_playbook
