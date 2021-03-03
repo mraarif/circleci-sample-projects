@@ -3,9 +3,10 @@ version: 2.1
 jobs:
   run_ansible_playbook:
     docker:
-      - image: alpine:latest
+      - image: ubuntu:latest
     steps:
       - checkout
+      - run: apk add build-base
       - run: apk add --no-cache python3 py3-pip
       - run: pip install ansible
       - add_ssh_keys:
