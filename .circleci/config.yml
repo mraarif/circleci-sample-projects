@@ -19,8 +19,9 @@ jobs:
     docker:
       - image: alpine:latest
 
-    steps: run:|
-      if curl -s --head "http://ec2-54-191-79-43.us-west-2.compute.amazonaws.com";then exit 0; else exit 1; fi
+    steps:
+      - run:|
+        if curl -s --head "http://ec2-54-191-79-43.us-west-2.compute.amazonaws.com";then exit 0; else exit 1; fi
 
 workflows:
   run_ansible_jobs:
