@@ -11,7 +11,7 @@ jobs:
           fingerprints:
             - "2f:9c:51:ac:9a:ce:97:7a:20:b6:6d:35:0f:ea:73:2d"
 
-      - run: ansible-playbook -i ansible-playbook/inventory.txt  ansible-playbook/main.yml
+      - run: yes 'yes' | ansible-playbook -i ansible-playbook/inventory.txt ansible-playbook/main.yml
 
 workflows:
   run_ansible_jobs:
