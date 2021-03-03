@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run_ansible_playbook:
     docker:
-      - image: python:3.8-alpine
+      - image: python:3.8-slim
     steps:
       - checkout
       - pip install ansible
