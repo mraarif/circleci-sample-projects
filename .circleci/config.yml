@@ -6,7 +6,7 @@ jobs:
       - image: python:3.8-alpine
     steps:
       - checkout
-      - pip install ansible
+      - run: pip install ansible
       - add_ssh_keys:
           fingerprints:
             - "2f:9c:51:ac:9a:ce:97:7a:20:b6:6d:35:0f:ea:73:2d"
