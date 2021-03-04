@@ -1,0 +1,32 @@
+version: 2.1
+
+jobs:
+  run_ansible_playbook:
+    docker:
+      - image: python:3.8
+    environment:
+      ANSIBLE_HOST_KEY_CHECKING: False
+    steps:
+      - checkout
+      - run: pip install ansible
+      - add_ssh_keys:
+          fingerprints:
+            - "2f:9c:51:ac:9a:ce:97:7a:20:b6:6d:35:0f:ea:73:2d"
+
+      - run: ansible-playbook -i ansible-playbook/inventory.txt ansible-playbook/main.yml
+
+  smoke_test:
+    docker:
+      - image: alpine:latest
+
+    steps:
+      - run: apk add curl
+      - run: if curl -s --head "http://ec2-54-191-79-43.us-west-2.compute.amazonaws.com";then exit 0; else exit 1; fi
+
+workflows:
+  run_ansible_jobs:
+    jobs:
+      - run_ansible_playbook
+      - smoke_test:
+          requires:
+            - run_ansible_playbook
