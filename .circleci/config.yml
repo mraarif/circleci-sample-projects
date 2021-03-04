@@ -19,12 +19,13 @@ jobs:
 
     steps:
       - run: apk add curl
-      - run: echo 'export EC2_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output=text)' >> $BASH_ENV
+      - run: echo "export EC2_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)" >> $BASH_ENV
 
       - run: if curl -s --head ${EC2_IP};then exit 0; else exit 1; fi
 
-      - destroy_environments
-        when: on_fail
+      - run:
+          command: destroy_environments
+          when: on_fail
 
 workflows:
   deploy_and_rollback:
