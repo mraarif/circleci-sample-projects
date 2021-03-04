@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  destroy_environments:
+  destroy_environment:
     steps:
       - run: aws cloudformation delete-stack --stack-name rollback-exercise
 
@@ -23,9 +23,10 @@ jobs:
 
       - run: if curl -s --head ${EC2_IP};then exit 0; else exit 1; fi
 
-      - run:
-          command: destroy_environments
-          when: on_fail
+      - when:
+          condition: on_fail
+          steps:
+            - destroy_environment
 
 workflows:
   deploy_and_rollback:
