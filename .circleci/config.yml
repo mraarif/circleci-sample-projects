@@ -6,18 +6,18 @@ jobs:
       - image: amazon/aws-cli
 
     steps:
-      - run: aws cloudformation deploy \
-            --template-file cloudfront/bucket.yml \
-            --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" \
-            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run: aws cloudformation deploy
+          --template-file cloudfront/bucket.yml
+          --stack-name "${CIRCLE_WORKFLOW_ID:0:7}"
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
 
   get_last_deployment_id:
     docker:
       - image: amazon/aws-cli
     steps:
-      - run: aws cloudformation \
-              list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
-              --no-paginate --output text > output.text
+      - run: aws cloudformation
+          list-exports --query "Exports[?Name==\`PipelineID\`].Value"
+          --no-paginate --output text > output.text
 
       - persist_to_workspace:
           root: /root/project
@@ -28,14 +28,14 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
-      - run: aws cloudformation deploy \
-            --template-file cloudfront.yml \
-            --stack-name production-distro \
-            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+      - run: aws cloudformation deploy
+          --template-file cloudfront.yml
+          --stack-name production-distro
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
   clean_up_old_front_end:
     docker:
-     - image: amazon/aws-cli
+      - image: amazon/aws-cli
 
     steps:
       - attach_workspace:
@@ -44,7 +44,6 @@ jobs:
       - run: OldPipelineID=`cat output.txt`
       - run: aws s3 rm "s3://${OldPipelineID}" --recursive
       - run: aws cloudformation delete-stack --stack-name "${OldPipelineID}"
-
 
 workflows:
   complete_cycle:
@@ -59,4 +58,3 @@ workflows:
       - clean_up_old_front_end:
           requires:
             - promote_to_production
-  
