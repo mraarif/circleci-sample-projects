@@ -18,7 +18,7 @@ jobs:
       - image: amazon/aws-cli
 
     steps:
-      - run: echo "export EC2_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)" >> $BASH_ENV
+      - run: echo "EC2_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)" >> $BASH_ENV
 
       - run: if curl -s --head ${EC2_IP};then exit 0; else exit 1; fi
 
