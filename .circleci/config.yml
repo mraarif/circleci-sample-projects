@@ -1,34 +1,62 @@
 version: 2.1
 
-commands:
-  destroy_environment:
-    steps:
-      - run:
-          command: aws cloudformation delete-stack --stack-name rollback-exercise
-          when: on_fail
 jobs:
-  create_infrastructure:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run: aws cloudformation create-stack --stack-name rollback-exercise --template-body file://rollback/template.yml
-
-  verify_webapp: # we want (intentionally) this job to fail to activate rollback
+  create_and_deploy_front_end:
     docker:
       - image: amazon/aws-cli
 
     steps:
-      - run: echo "EC2_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)" >> $BASH_ENV
+      - run: aws cloudformation deploy \
+        --template-file cloudfront/bucket.yml \
+        --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" \
+        --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
 
-      - run: if curl -s --head ${EC2_IP};then return 0; else return 1; fi
+  get_last_deployment_id:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - run: aws cloudformation \
+        list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+        --no-paginate --output text > output.text
 
-      - destroy_environment
+      - persist_to_workspace:
+          root: /root/project
+          paths:
+            - output.txt
+
+  promote_to_production:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - run: aws cloudformation deploy \
+      --template-file cloudfront.yml \
+      --stack-name production-distro \
+      --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+
+  clean_up_old_front_end:
+    docker:
+     - image: amazon/aws-cli
+
+    steps:
+      - attach_workspace:
+          at: /root/project
+
+      - run: OldPipelineID=`cat output.txt`
+      - run: aws s3 rm "s3://${OldPipelineID}" --recursive
+      - run: aws cloudformation delete-stack --stack-name "${OldPipelineID}"
+
 
 workflows:
-  deploy_and_rollback:
+  complete_cycle:
     jobs:
-      - create_infrastructure
-      - verify_webapp:
+      - create_and_deploy_front_end
+      - get_last_deployment_id:
           requires:
-            - create_infrastructure
+            - create_and_deploy_front_end
+      - promote_to_production:
+          requires:
+            - get_last_deployment_id
+      - clean_up_old_front_end:
+          requires:
+            - promote_to_production
+  

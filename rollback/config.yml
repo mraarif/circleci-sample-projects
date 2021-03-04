@@ -1,0 +1,34 @@
+version: 2.1
+
+commands:
+  destroy_environment:
+    steps:
+      - run:
+          command: aws cloudformation delete-stack --stack-name rollback-exercise
+          when: on_fail
+jobs:
+  create_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: aws cloudformation create-stack --stack-name rollback-exercise --template-body file://rollback/template.yml
+
+  verify_webapp: # we want (intentionally) this job to fail to activate rollback
+    docker:
+      - image: amazon/aws-cli
+
+    steps:
+      - run: echo "EC2_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)" >> $BASH_ENV
+
+      - run: if curl -s --head ${EC2_IP};then return 0; else return 1; fi
+
+      - destroy_environment
+
+workflows:
+  deploy_and_rollback:
+    jobs:
+      - create_infrastructure
+      - verify_webapp:
+          requires:
+            - create_infrastructure
