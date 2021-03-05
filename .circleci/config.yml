@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run: aws cloudformation deploy
           --template-file cloudfront/bucket.yml
-          --stack-name "$stack-{CIRCLE_WORKFLOW_ID:0:7}"
+          --stack-name "stack-${CIRCLE_WORKFLOW_ID:0:7}"
           --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}" NAME="bucket-${CIRCLE_WORKFLOW_ID:0:7}"
 
   get_last_deployment_id:
