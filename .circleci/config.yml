@@ -19,11 +19,11 @@ jobs:
       - run: yum install -y tar gzip
       - run: aws cloudformation
           list-exports --query "Exports[?Name==\`PipelineID\`].Value"
-          --no-paginate --output text > output.text
+          --no-paginate --output text > output.txt
 
       - run: pwd
       - persist_to_workspace:
-          root: ~/
+          root: /root/project
           paths:
             - output.txt
 
@@ -44,7 +44,7 @@ jobs:
     steps:
       - run: yum install -y tar gzip
       - attach_workspace:
-          at: ~/
+          at: /root/project
 
       - run: OldPipelineID=`cat output.txt`
       - run: aws s3 rm "s3://${OldPipelineID}" --recursive
