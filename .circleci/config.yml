@@ -22,7 +22,7 @@ jobs:
           --no-paginate --output text > output.text
 
       - persist_to_workspace:
-          root: /root/project
+          root: ~/
           paths:
             - output.txt
 
@@ -43,7 +43,7 @@ jobs:
     steps:
       - run: yum install -y tar gzip
       - attach_workspace:
-          at: /root/project
+          at: ~/
 
       - run: OldPipelineID=`cat output.txt`
       - run: aws s3 rm "s3://${OldPipelineID}" --recursive
