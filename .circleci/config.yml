@@ -16,7 +16,7 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
-      - run: yum install tar
+      - run: yum install -y tar
       - run: aws cloudformation
           list-exports --query "Exports[?Name==\`PipelineID\`].Value"
           --no-paginate --output text > output.text
@@ -41,7 +41,7 @@ jobs:
       - image: amazon/aws-cli
 
     steps:
-      - run: yum install tar
+      - run: yum install -y tar
       - attach_workspace:
           at: /root/project
 
