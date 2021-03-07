@@ -1,0 +1,14 @@
+version: 2.1
+
+jobs:
+  create_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: aws cloudformation create-stack --stack-name circleci --template-body file://cloudformation/template.yml
+
+workflows:
+  print_hello_world:
+    jobs:
+      - create_infrastructure
